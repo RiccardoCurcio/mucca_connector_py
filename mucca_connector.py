@@ -152,4 +152,17 @@ class mucca_connector:
 
     def tcpClient(self, ports, ip, message, eventFlag, chunckSize):
         """Tcp client."""
+        clientIndex = os.getenv("CLIENT_INDEX")
+        numberOfPort = len(ports)
+
+        if clientIndex is None:
+            os.setenv("CLIENT_INDEX", 0)
+            clientIndex = int(os.getenv("CLIENT_INDEX"))
+        else:
+            clientIndex = int(os.getenv("CLIENT_INDEX"))
+            clientIndex = clientIndex + 1
+            if clientIndex > numberOfPort:
+                os.setenv("CLIENT_INDEX", 0)
+                clientIndex = int(os.getenv("CLIENT_INDEX"))
+        print(clientIndex, ports[clientIndex])
         pass
