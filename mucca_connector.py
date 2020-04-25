@@ -162,7 +162,7 @@ class mucca_connector:
             clientIndex = int(os.getenv("CLIENT_INDEX"))
             clientIndex = clientIndex + 1
             if clientIndex > numberOfPort:
-                os.setenv("CLIENT_INDEX", 0)
+                os.putenv("CLIENT_INDEX", 0)
                 clientIndex = int(os.getenv("CLIENT_INDEX"))
         print(clientIndex, ports[clientIndex])
         pass
