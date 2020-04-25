@@ -156,7 +156,7 @@ class mucca_connector:
         numberOfPort = len(ports)
 
         if clientIndex is None:
-            os.setenv("CLIENT_INDEX", 0)
+            os.putenv("CLIENT_INDEX", 0)
             clientIndex = int(os.getenv("CLIENT_INDEX"))
         else:
             clientIndex = int(os.getenv("CLIENT_INDEX"))
