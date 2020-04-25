@@ -168,7 +168,7 @@ class mucca_connector:
                     connection, client_address = sock.accept()
                     response = muccaChunckRecvfrom.run(connection, int(chunckSize), logging)
                     callResponse = callback(response)
-
+                    callResponse = bytes(callResponse.encode())
                     muccaChunckSendTo.run(
                         connection,
                         int(chunckSize),
