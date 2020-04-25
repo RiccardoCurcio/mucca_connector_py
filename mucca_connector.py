@@ -146,7 +146,7 @@ class mucca_connector:
     #             }
     #     return response_rec
 
-    def tcpServerHandler(self, ports, chunckSize, callback=None):
+    def tcpServerHandler(self, ports, chunckSize, eventFlag, callback=None):
         """Tcp client."""
         # Create a TCP/IP socket
         for port in ports:
@@ -154,27 +154,38 @@ class mucca_connector:
             if newRef == 0:
                 # children
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                # Bind the socket to the port
                 server_address = ('localhost', port)
-                print('starting up on {} port {}'.format(*server_address))
-                sock.bind(server_address)
-
-                # Listen for incoming connections
-                sock.listen(1)
-                while True:
-                    # Wait for a connection
-                    print(int(chunckSize))
-                    print('waiting for a connection')
-                    connection, client_address = sock.accept()
-                    response = muccaChunckRecvfrom.run(connection, int(chunckSize), logging)
-                    callResponse = callback(response)
-                    callResponse = bytes(callResponse.encode())
-                    muccaChunckSendTo.run(
-                        connection,
-                        int(chunckSize),
-                        str(callResponse, "utf-8"),
-                        logging
+                try:
+                    sock.bind(server_address)
+                    sock.listen(1)
+                    while True:
+                        logging.log_info(
+                            'Wait connection on {}:{}'.format(*server_address),
+                            os.path.abspath(__file__),
+                            sys._getframe().f_lineno
+                        )
+                        connection, client_address = sock.accept()
+                        response = muccaChunckRecvfrom.run(
+                            connection,
+                            int(chunckSize),
+                            logging
+                        )
+                        callResponse = callback(response)
+                        callResponse = bytes(callResponse.encode())
+                        if eventFlag is False
+                            muccaChunckSendTo.run(
+                                connection,
+                                int(chunckSize),
+                                str(callResponse, "utf-8"),
+                                logging
+                            )
+                except Exception as e:
+                    logging.log_error(
+                        'Not bind on {}:{}'.format(*server_address),
+                        os.path.abspath(__file__),
+                        sys._getframe().f_lineno
                     )
+                    pass
                 # ---- children
         for port in ports:
             os.waitpid(0, 0)
