@@ -15,8 +15,10 @@ class muccaChunckSendTo:
             os.path.abspath(__file__),
             sys._getframe().f_lineno
             )
+        prefilightSize = "{:05n}".format(str(msgSize))
+        prefilightSize = str(msgSize).encode()
 
-        sent = socketClient.sendall(bytes(str(msgSize).encode()))
+        sent = socketClient.sendall(bytes(prefilightSize.encode()))
 
         numberOfChunk = int(msgSize)/chunckSize
         plusChunk = int(msgSize) % chunckSize

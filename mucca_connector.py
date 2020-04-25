@@ -146,8 +146,38 @@ class mucca_connector:
     #             }
     #     return response_rec
 
-    def tcpServerHandler():
+    def tcpServerHandler(self, ports, chunckSize, callback=None):
         """Tcp client."""
+        # Create a TCP/IP socket
+        for port in ports:
+            newRef = os.fork()
+            if newRef == 0:
+                # children
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                # Bind the socket to the port
+                server_address = ('localhost', port)
+                print('starting up on {} port {}'.format(*server_address))
+                sock.bind(server_address)
+
+                # Listen for incoming connections
+                sock.listen(1)
+                while True:
+                    # Wait for a connection
+                    print(int(chunckSize))
+                    print('waiting for a connection')
+                    connection, client_address = sock.accept()
+                    response = muccaChunckRecvfrom.run(connection, int(chunckSize), logging)
+                    callResponse = callback(response)
+
+                    muccaChunckSendTo.run(
+                        connection,
+                        int(chunckSize),
+                        str(callResponse, "utf-8"),
+                        logging
+                    )
+                # ---- children
+        for port in ports:
+            os.waitpid(0, 0)
         pass
 
     def tcpClient(self, ports, ip, message, eventFlag, chunckSize):
