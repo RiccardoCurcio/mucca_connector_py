@@ -156,13 +156,44 @@ class mucca_connector:
         numberOfPort = len(ports)
 
         if clientIndex is None:
-            os.putenv("CLIENT_INDEX", 0)
+            os.environ['CLIENT_INDEX'] = "0"
             clientIndex = int(os.getenv("CLIENT_INDEX"))
         else:
             clientIndex = int(os.getenv("CLIENT_INDEX"))
             clientIndex = clientIndex + 1
-            if clientIndex > numberOfPort:
-                os.putenv("CLIENT_INDEX", 0)
+            os.environ['CLIENT_INDEX'] = str(clientIndex)
+            if clientIndex >= numberOfPort:
+                os.environ['CLIENT_INDEX'] = "0"
                 clientIndex = int(os.getenv("CLIENT_INDEX"))
-        print(clientIndex, ports[clientIndex])
-        pass
+        # Create a TCP/IP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Connect the socket to the port where the server is listening
+        server_address = (ip, ports[clientIndex])
+        print('connecting to {} port {}'.format(*server_address))
+        sock.connect(server_address)
+
+        try:
+            c_message = bytes(message.encode())
+            try:
+                muccaChunckSendTo.run(
+                    sock,
+                    int(chunckSize),
+                    str(c_message, "utf-8"),
+                    logging
+                )
+            except InterruptedError as emsg:
+                logging.log_error(
+                    'Interrupted signal error, sendto fail',
+                    os.path.abspath(__file__),
+                    sys._getframe().f_lineno
+                )
+            if eventFlag is False:
+                response = muccaChunckRecvfrom.run(sock, int(chunckSize), logging)
+            else:
+                response = True
+
+        finally:
+            print('closing socket')
+            sock.close()
+        return response

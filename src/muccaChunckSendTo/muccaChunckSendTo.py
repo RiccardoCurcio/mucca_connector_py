@@ -7,7 +7,7 @@ class muccaChunckSendTo:
     """MuccaChunckSendTo."""
 
     @staticmethod
-    def run(socketClient, chunckSize, message, address, logging):
+    def run(socketClient, chunckSize, message, logging):
         """Run."""
         msgSize = len(message)
         logging.log_info(
@@ -16,7 +16,7 @@ class muccaChunckSendTo:
             sys._getframe().f_lineno
             )
 
-        sent = socketClient.sendto(bytes(str(msgSize).encode()), address)
+        sent = socketClient.sendall(bytes(str(msgSize).encode()))
 
         numberOfChunk = int(msgSize)/chunckSize
         plusChunk = int(msgSize) % chunckSize
@@ -33,21 +33,8 @@ class muccaChunckSendTo:
                 chunkedMsg = message[
                     (chunckSize)*i: ((chunckSize)*i)+chunckSize
                 ]
-            sent = socketClient.sendto(
+            sent = socketClient.sendall(
                 bytes(
                     str(chunkedMsg).encode()
-                ),
-                address
                 )
-
-            logging.log_info(
-                "Send to {}:{} Chunk [{} of {}]: {} Byte".format(
-                    address[0],
-                    address[1],
-                    i+1,
-                    int(numberOfChunk),
-                    sent
-                ),
-                os.path.abspath(__file__),
-                sys._getframe().f_lineno
-            )
+                )

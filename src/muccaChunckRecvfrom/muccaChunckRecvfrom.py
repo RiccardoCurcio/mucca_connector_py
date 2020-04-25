@@ -15,17 +15,17 @@ class muccaChunckRecvfrom:
             sys._getframe().f_lineno
             )
 
-        data, address = socketServer.recvfrom(chunckSize)
+        data = socketServer.recv(5)
 
-        logging.log_info(
-            'Received total size msg {}:{} {} Byte'.format(
-                address[0],
-                address[1],
-                int(data)
-            ),
-            os.path.abspath(__file__),
-            sys._getframe().f_lineno
-            )
+        # logging.log_info(
+        #     'Received total size msg {}:{} {} Byte'.format(
+        #         address[0],
+        #         address[1],
+        #         int(data)
+        #     ),
+        #     os.path.abspath(__file__),
+        #     sys._getframe().f_lineno
+        #     )
         totalsize = int(data)
         numberOfChunk = int(data)/chunckSize
         plusChunk = int(data) % chunckSize
@@ -45,31 +45,28 @@ class muccaChunckRecvfrom:
             if numberOfChunkInt == 0:
                 chunckSize = totalsize-((cp-1)*chunckSize)
 
-            logging.log_info(
-                'WAIT FROM {}:{} [{} of {}]...'.format(
-                    address[0],
-                    address[1],
-                    numberOfChunkRecived,
-                    cp
-                ),
-                os.path.abspath(__file__),
-                sys._getframe().f_lineno
-                )
-            data, address = socketServer.recvfrom(chunckSize)
+            # logging.log_info(
+            #     'WAIT FROM {}:{} [{} of {}]...'.format(
+            #         address[0],
+            #         address[1],
+            #         numberOfChunkRecived,
+            #         cp
+            #     ),
+            #     os.path.abspath(__file__),
+            #     sys._getframe().f_lineno
+            #     )
+            data = socketServer.recv(chunckSize)
 
-            logging.log_info(
-                'FROM {}:{} Chunk [{} of {}]: {} Byte'.format(
-                    address[0],
-                    address[1],
-                    numberOfChunkRecived,
-                    cp,
-                    len(data)
-                ),
-                os.path.abspath(__file__),
-                sys._getframe().f_lineno
-                )
+            # logging.log_info(
+            #     'FROM {}:{} Chunk [{} of {}]: {} Byte'.format(
+            #         address[0],
+            #         address[1],
+            #         numberOfChunkRecived,
+            #         cp,
+            #         len(data)
+            #     ),
+            #     os.path.abspath(__file__),
+            #     sys._getframe().f_lineno
+            #     )
             completeMsg = "{}{}".format(completeMsg, data.decode('utf-8'))
-        return {
-                "data": completeMsg.encode(),
-                "address": address
-                }
+        return completeMsg.encode()
