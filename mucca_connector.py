@@ -172,7 +172,7 @@ class mucca_connector:
                         )
                         callResponse = callback(response)
                         callResponse = bytes(callResponse.encode())
-                        if eventFlag is False
+                        if eventFlag is False:
                             muccaChunckSendTo.run(
                                 connection,
                                 int(chunckSize),
