@@ -211,7 +211,11 @@ class mucca_connector:
 
         # Connect the socket to the port where the server is listening
         server_address = (ip, ports[clientIndex])
-        print('connecting to {} port {}'.format(*server_address))
+        logging.log_info(
+            'Connection to {}:{}'.format(*server_address),
+            os.path.abspath(__file__),
+            sys._getframe().f_lineno
+        )
         sock.connect(server_address)
 
         try:
@@ -235,6 +239,10 @@ class mucca_connector:
                 response = True
 
         finally:
-            print('closing socket')
+            logging.log_info(
+                'Socket close',
+                os.path.abspath(__file__),
+                sys._getframe().f_lineno
+            )
             sock.close()
         return response
