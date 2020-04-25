@@ -15,7 +15,7 @@ class muccaChunckSendTo:
             os.path.abspath(__file__),
             sys._getframe().f_lineno
             )
-        prefilightSize = "{:05n}".format(msgSize)
+        prefilightSize = str(msgSize).zfill(5)
 
         sent = socketClient.sendall(bytes(prefilightSize.encode()))
 
