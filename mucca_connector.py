@@ -19,7 +19,7 @@
 import socket
 import sys
 import os
-from vendor.mucca_logging.mucca_logging import logging
+from vendor.mucca_logging_py.mucca_logging import logging
 from vendor.mucca_connector_py.src.muccaChunckRecvfrom.muccaChunckRecvfrom import muccaChunckRecvfrom
 from vendor.mucca_connector_py.src.muccaChunckSendTo.muccaChunckSendTo import muccaChunckSendTo
 
